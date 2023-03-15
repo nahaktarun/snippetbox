@@ -2,7 +2,7 @@ package main
 import (
 	"errors"
 "fmt"
-"html/template"
+// "html/template"
 
 "net/http"
 "strconv"
@@ -15,24 +15,35 @@ func (app *application)home(w http.ResponseWriter, r *http.Request) {
 		app.notFound(w)
 		return
 		}
+
+		snippets , err := app.snippets.Latest()
+		if err != nil{
+			app.serveError(w, err)
+			return
+		}
+
+		for _ , snippet := range snippets {
+			fmt.Fprintf(w, "%+v\n",snippet)
+		}
+
 		// Include the navigation partial in the template files.
-		files := []string{
-		"./ui/html/base.tmpl",
-		"./ui/html/partials/nav.tmpl",
-		"./ui/html/pages/home.tmpl",
-		}
-		ts, err := template.ParseFiles(files...)
-		if err != nil {
-		app.serveError(w, err)
-		http.Error(w, "Internal Server Error", 500)
-		return
-		}
-		err = ts.ExecuteTemplate(w, "base", nil)
-		if err != nil {
-		// app.errorLog.Print(err.Error())
-		app.serveError(w, err)
-		http.Error(w, "Internal Server Error", 500)
-		}
+		// files := []string{
+		// "./ui/html/base.tmpl",
+		// "./ui/html/partials/nav.tmpl",
+		// "./ui/html/pages/home.tmpl",
+		// }
+		// ts, err := template.ParseFiles(files...)
+		// if err != nil {
+		// app.serveError(w, err)
+		// http.Error(w, "Internal Server Error", 500)
+		// return
+		// }
+		// err = ts.ExecuteTemplate(w, "base", nil)
+		// if err != nil {
+		// // app.errorLog.Print(err.Error())
+		// app.serveError(w, err)
+		// http.Error(w, "Internal Server Error", 500)
+		// }
 
 
 	// w.Write([]byte("Hello from Snippetbox"))
