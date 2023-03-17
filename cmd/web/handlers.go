@@ -2,7 +2,7 @@ package main
 import (
 	"errors"
 "fmt"
-"html/template"
+// "html/template"
 
 "net/http"
 "strconv"
@@ -26,30 +26,34 @@ func (app *application)home(w http.ResponseWriter, r *http.Request) {
 		// 	fmt.Fprintf(w, "%+v\n",snippet)
 		// }
 
-		// Include the navigation partial in the template files.
-		files := []string{
-		"./ui/html/base.tmpl",
-		"./ui/html/partials/nav.tmpl",
-		"./ui/html/pages/home.tmpl",
-		}
-		ts, err := template.ParseFiles(files...)
-		if err != nil {
-		app.serveError(w, err)
-		// http.Error(w, "Internal Server Error", 500)
-		return
-		}
+		// // Include the navigation partial in the template files.
+		// files := []string{
+		// "./ui/html/base.tmpl",
+		// "./ui/html/partials/nav.tmpl",
+		// "./ui/html/pages/home.tmpl",
+		// }
+		// ts, err := template.ParseFiles(files...)
+		// if err != nil {
+		// app.serveError(w, err)
+		// // http.Error(w, "Internal Server Error", 500)
+		// return
+		// }
 
-		// snippets
-		data := &templateData{
+		// // snippets
+		// data := &templateData{
+		// 	Snippets: snippets,
+		// }
+
+		// err = ts.ExecuteTemplate(w, "base", data)
+		// if err != nil {
+		// // app.errorLog.Print(err.Error())
+		// app.serveError(w, err)
+		// // http.Error(w, "Internal Server Error", 500)
+		// }
+
+		app.render(w, http.StatusOK, "home.tmpl",&templateData{
 			Snippets: snippets,
-		}
-
-		err = ts.ExecuteTemplate(w, "base", data)
-		if err != nil {
-		// app.errorLog.Print(err.Error())
-		app.serveError(w, err)
-		// http.Error(w, "Internal Server Error", 500)
-		}
+		})
 
 
 	// w.Write([]byte("Hello from Snippetbox"))
@@ -69,25 +73,31 @@ func (app *application) snippetView(w http.ResponseWriter, r *http.Request) {
 	}
 	return
 	}
-	files := []string{
-	"./ui/html/base.tmpl",
-	"./ui/html/partials/nav.tmpl",
-	"./ui/html/pages/view.tmpl",
-	}
-	ts, err := template.ParseFiles(files...)
-	if err != nil {
-	app.serveError(w, err)
-	return
-	}
-	// Create an instance of a templateData struct holding the snippet data.
-	data := &templateData{
-	Snippet: snippet,
-	}
-	// Pass in the templateData struct when executing the template.
-	err = ts.ExecuteTemplate(w, "base", data)
-	if err != nil {
-	app.serveError(w, err)
-	}
+	// files := []string{
+	// "./ui/html/base.tmpl",
+	// "./ui/html/partials/nav.tmpl",
+	// "./ui/html/pages/view.tmpl",
+	// }
+	// ts, err := template.ParseFiles(files...)
+	// if err != nil {
+	// app.serveError(w, err)
+	// return
+	// }
+	// // Create an instance of a templateData struct holding the snippet data.
+	// data := &templateData{
+	// Snippet: snippet,
+	// }
+	// // Pass in the templateData struct when executing the template.
+	// err = ts.ExecuteTemplate(w, "base", data)
+	// if err != nil {
+	// app.serveError(w, err)
+	// }
+
+	// use the new render helper
+	app.render(w, http.StatusOK, "view.tmpl", &templateData{
+		Snippet: snippet,
+	})
+
 	}
 
 func (app *application) snippetCreate(w http.ResponseWriter, r *http.Request) {
