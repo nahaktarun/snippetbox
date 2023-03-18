@@ -51,9 +51,10 @@ func (app *application)home(w http.ResponseWriter, r *http.Request) {
 		// // http.Error(w, "Internal Server Error", 500)
 		// }
 
-		app.render(w, http.StatusOK, "home.tmpl",&templateData{
-			Snippets: snippets,
-		})
+		data := app.newTemplateData(r)
+		data.Snippets = snippets
+
+		app.render(w, http.StatusOK, "home.tmpl",data)
 
 
 	// w.Write([]byte("Hello from Snippetbox"))
@@ -93,10 +94,12 @@ func (app *application) snippetView(w http.ResponseWriter, r *http.Request) {
 	// app.serveError(w, err)
 	// }
 
+
+	data := app.newTemplateData(r)
+	data.Snippet = snippet
+
 	// use the new render helper
-	app.render(w, http.StatusOK, "view.tmpl", &templateData{
-		Snippet: snippet,
-	})
+	app.render(w, http.StatusOK, "view.tmpl",data)
 
 	}
 
