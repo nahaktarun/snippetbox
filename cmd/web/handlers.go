@@ -16,6 +16,8 @@ func (app *application)home(w http.ResponseWriter, r *http.Request) {
 		return
 		}
 
+		// panic("OOps, somthing went wrong");
+
 		snippets , err := app.snippets.Latest()
 		if err != nil{
 			app.serveError(w, err)
