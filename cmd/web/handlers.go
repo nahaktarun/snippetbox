@@ -108,6 +108,15 @@ func (app *application) snippetView(w http.ResponseWriter, r *http.Request) {
 	}
 
 func (app *application) snippetCreate(w http.ResponseWriter, r *http.Request) {
+
+
+	data := app.newTemplateData(r)
+
+	app.render(w, http.StatusOK, "create.tmpl",data)
+
+}
+
+func (app *application) snippetCreatePost(w http.ResponseWriter, r *http.Request){
 	
 
 	title := "O snail"
@@ -121,8 +130,4 @@ func (app *application) snippetCreate(w http.ResponseWriter, r *http.Request) {
 	}
 
 	http.Redirect(w, r, fmt.Sprintf("/snippet/view/%d",id),http.StatusSeeOther)
-}
-
-func (app *application) snippetCreatePost(w http.ResponseWriter, r *http.Request){
-	w.Write([]byte("Display the form for creating a new snipeet...."))
 }
