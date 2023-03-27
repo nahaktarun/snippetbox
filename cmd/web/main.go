@@ -10,8 +10,11 @@ import (
 _ "github.com/go-sql-driver/mysql"
 
 "html/template"
+"time"
 
 "github.com/go-playground/form/v4"
+"github.com/alexedwards/scs/mysqlstore"
+"github.com/alexedwards/scs/v2"
 
 
 )
@@ -22,6 +25,7 @@ type application struct {
 	snippets *models.SnippetModel
 	templateCache map[string]*template.Template
 	formDecoder *form.Decoder
+	sessionManager *scs.SessionManager
 }
 
 
@@ -58,6 +62,9 @@ func main() {
 	// init a decoder instance
 	formDecoder := form.NewDecoder()
 
+	sessionManager := scs.New()
+	sessionManager.Store = mysqlstore.New(db)
+	sessionManager.Lifetime = 12 * time.Hour
 	// And add it to the application dependencies
 	app := &application{
 		errorLog: errorLog,
@@ -65,6 +72,7 @@ func main() {
 		snippets : &models.SnippetModel{DB: db},
 		templateCache: templateCache,
 		formDecoder: formDecoder,
+		sessionManager: sessionManager,
 	}
 	
 	srv := &http.Server{
