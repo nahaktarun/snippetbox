@@ -102,9 +102,14 @@ func (app *application) snippetView(w http.ResponseWriter, r *http.Request) {
 	// app.serveError(w, err)
 	// }
 
+	// flash the message
+	flash := app.sessionManager.PopString(r.Context(),"flash")
 
 	data := app.newTemplateData(r)
 	data.Snippet = snippet
+
+	// pass the flash message to the template
+	data.Flash = flash
 
 	// use the new render helper
 	app.render(w, http.StatusOK, "view.tmpl",data)
@@ -127,13 +132,14 @@ func (app *application) snippetCreate(w http.ResponseWriter, r *http.Request) {
 
 type snippetCreateForm struct {
 	Title   string `form:"title"` 
-	Content string `form: "content"`
-	Expires  int `form: "expires"`
-	validator.Validator `form: "-"`
+	Content string `form:"content"`
+	Expires  int `form:"expires"`
+	validator.Validator `form:"-"`
 }
 
 
 func (app *application) snippetCreatePost(w http.ResponseWriter, r *http.Request) {
+	
 	var form snippetCreateForm
 	err := app.decodePostForm(r, &form)
 	if err != nil {
@@ -155,5 +161,10 @@ func (app *application) snippetCreatePost(w http.ResponseWriter, r *http.Request
 	app.serveError(w, err)
 	return
 	}
+
+
+	// working with session manager
+	app.sessionManager.Put(r.Context(),"flash", "Snippet successfully created.")
+
 	http.Redirect(w, r, fmt.Sprintf("/snippet/view/%d", id), http.StatusSeeOther)
 	}
